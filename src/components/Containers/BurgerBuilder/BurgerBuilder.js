@@ -4,6 +4,7 @@ import Burger from '../Burger/Burger';
 import BuildControls from '../Burger/BuildControls/BuildControls';
 import Modal from '../../UI/Modal/Modal';
 import OrderSummary from '../Burger/OrderSummary/OrderSummary';
+import Swal from 'sweetalert2';
 
 const INGREDIENT_PRICE={
     salad:0.5,
@@ -31,7 +32,6 @@ class BurgerBuilder extends Component{
         }).reduce((sum,el)=>{
             return sum+el;
         },0);
-        console.log(sum);
         this.setState({purchaseble:sum>0})
     }
     addIngedientHandler=(type)=>{
@@ -76,6 +76,28 @@ class BurgerBuilder extends Component{
     purchaseHandler=()=>{
         this.setState({purchasing:true});
     }
+
+    purchaseCancelHandler=()=>{
+        this.setState({purchasing:false})
+    }
+    purchaseContinueHandler=()=>{
+        Swal.fire({
+            title: 'Are you sure Continue purchasing',
+            text: 'Please pay amount :'+this.state.totalPrice.toFixed(2),
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33', 
+            confirmButtonText: 'Yes!'
+         }).then((result) => {
+             console.log(result.value);
+            if(result.value){
+                this.setState({purchasing:false})
+            }else{
+                this.setState({purchasing:false}) 
+            }
+         })
+    }
     render(){
         const disAbledInfo={
             ...this.state.ingredients
@@ -85,8 +107,12 @@ class BurgerBuilder extends Component{
         }
         return(
             <Aux>
-                    <Modal show={this.state.purchasing}>
-                      <OrderSummary ingredients={this.state.ingredients}/>
+                    <Modal show={this.state.purchasing} >
+                      <OrderSummary 
+                        ingredients={this.state.ingredients} 
+                        continuePurchse={this.purchaseContinueHandler} 
+                        modalClosed={this.purchaseCancelHandler}
+                        totalPrice={this.state.totalPrice}/>
                     </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
