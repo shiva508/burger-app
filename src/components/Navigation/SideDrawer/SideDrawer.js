@@ -3,11 +3,10 @@ import Logo from '../../Logo/Logo';
 import NavigationItems from '../NavigationItems/NavigationItems';
 import sideDrawerStyles from '../SideDrawer/SideDrawer.module.css';
 import Backdrop from '../../UI/Backdrop/Backdrop';
-import Aux from '../../hoc/Aux';
+import Aux from '../../hoc/Aux/Aux';
 
 const SideDrawer=(props)=>{
     let attachedClasses=[sideDrawerStyles.SideDrawer,sideDrawerStyles.Close];
-    console.log(attachedClasses)
     if(props.open){
         attachedClasses=[sideDrawerStyles.SideDrawer,sideDrawerStyles.Open];
     }

@@ -1,16 +1,21 @@
-import React from 'react';
-import Aux from '../../../hoc/Aux';
+import React, { Component } from 'react';
+import { render } from 'react-dom';
+import Aux from '../../../hoc/Aux/Aux';
 import Button from '../../../UI/Button/Button';
 
-const OrderSummary=(props)=>{
+class OrderSummary extends Component{
 
-    const ingradentsSummary=Object.keys(props.ingredients).map((ingradentsKey)=>{
-    return (
-    <li key={ingradentsKey}>
-        <span style={{textTransform:'capitalize'}}>{ingradentsKey}</span> :{props.ingredients[ingradentsKey]}
-        </li>)
-    })
-
+    componentDidUpdate(){
+        console.log("OrderSummary")
+    }
+    
+render(){
+    const ingradentsSummary=Object.keys(this.props.ingredients).map((ingradentsKey)=>{
+        return (
+        <li key={ingradentsKey}>
+            <span style={{textTransform:'capitalize'}}>{ingradentsKey}</span> :{this.props.ingredients[ingradentsKey]}
+            </li>)
+        })
     return(
         <Aux>
             <h3>Your Order</h3>
@@ -19,11 +24,15 @@ const OrderSummary=(props)=>{
                 {ingradentsSummary}
             </ul>
             <p>Continue to checkout</p>
-            <p>Amout to be paid: <strong>{props.totalPrice.toFixed(2)}</strong></p>
-            <Button btnType="Danger" clicked={props.modalClosed}>CANCEL</Button>
-            <Button btnType="Success" clicked={props.continuePurchse}>CONTINUE</Button>
+            <p>Amout to be paid: <strong>{this.props.totalPrice.toFixed(2)}</strong></p>
+            <Button btnType="Danger" clicked={this.props.modalClosed}>CANCEL</Button>
+            <Button btnType="Success" clicked={this.props.continuePurchse}>CONTINUE</Button>
         </Aux>
     )
+}
+    
+
+    
 };
 export default OrderSummary;
 

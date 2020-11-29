@@ -1,0 +1,16 @@
+.Posts {
+    display: flex;
+    flex-flow: row wrap;
+    flex-direction: row;
+    justify-content: center;
+    width: 80%;
+    margin: auto;
+}
+
+@media(min-height: 500px){
+    .Posts {
+        max-height: 301px;
+        overflow: scroll
+    }
+    
+}
