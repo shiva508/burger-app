@@ -6,6 +6,8 @@ import Modal from '../../UI/Modal/Modal';
 import OrderSummary from '../Burger/OrderSummary/OrderSummary';
 import Swal from 'sweetalert2';
 import AxiosFirebaseFactory from '../../Factory/AxiosFirebaseFactory/AxiosFirebaseFactory';
+import Spinner from '../../UI/Spinner/Spinner';
+import WithErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
 
 const INGREDIENT_PRICE={
     salad:0.5,
@@ -24,7 +26,8 @@ class BurgerBuilder extends Component{
         },
         totalPrice:4,
         purchaseble:false,
-        purchasing:false
+        purchasing: false,
+        isLoading:false
     };
 
     updatePurchaseState(ingredieints){
@@ -82,6 +85,8 @@ class BurgerBuilder extends Component{
         this.setState({purchasing:false})
     }
     purchaseContinueHandler = () => {
+
+
         const orders = {
             ingredients: this.state.ingredients,
             price: this.state.totalPrice,
@@ -100,13 +105,25 @@ class BurgerBuilder extends Component{
             cancelButtonColor: '#d33', 
             confirmButtonText: 'Yes!'
          }).then((result) => {
-             console.log(result.value);
+             this.setState({
+                isLoading:true
+            })
             if(result.value){
                 this.setState({ purchasing: false })
                 AxiosFirebaseFactory.post('/orders.json', orders)
-                    .then(response => console.log(response))
-                    .catch(error => console.log(error));
-
+                    .then(response => {
+                        console.log(response)
+                         this.setState({
+                isLoading:false
+            })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                     this.setState({
+                isLoading:false
+            })
+                    });
+               
             }else{
                 this.setState({purchasing:false}) 
             }
@@ -119,14 +136,20 @@ class BurgerBuilder extends Component{
         for(let key in disAbledInfo){
             disAbledInfo[key]=disAbledInfo[key]<=0;
         }
-        return(
-            <Aux>
-                    <Modal show={this.state.purchasing} >
-                      <OrderSummary 
+        let orderSummary= <OrderSummary 
                         ingredients={this.state.ingredients} 
                         continuePurchse={this.purchaseContinueHandler} 
                         modalClosed={this.purchaseCancelHandler}
                         totalPrice={this.state.totalPrice}/>
+         
+        if (this.state.isLoading) {
+            orderSummary=<Spinner/>
+        }
+
+        return(
+            <Aux>
+                    <Modal show={this.state.purchasing} >
+                     {orderSummary}
                     </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
@@ -139,4 +162,4 @@ class BurgerBuilder extends Component{
             </Aux>
         )   
     }
-}export default BurgerBuilder;
+}export default WithErrorHandler(BurgerBuilder,AxiosFirebaseFactory);

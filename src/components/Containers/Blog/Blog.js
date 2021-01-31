@@ -6,9 +6,6 @@ import Post from '../../Post/Post';
 import PostsService from "../../Factory/PostsService/PostsService";
 import { Container } from 'react-bootstrap';
 import axios from "axios";
-axios.interceptors.request.use(request => {
-  console.log(request);
-})
 
 class Blog extends Component{
     state = {
