@@ -5,6 +5,7 @@ import BuildControls from '../Burger/BuildControls/BuildControls';
 import Modal from '../../UI/Modal/Modal';
 import OrderSummary from '../Burger/OrderSummary/OrderSummary';
 import Swal from 'sweetalert2';
+import AxiosFirebaseFactory from '../../Factory/AxiosFirebaseFactory/AxiosFirebaseFactory';
 
 const INGREDIENT_PRICE={
     salad:0.5,
@@ -80,7 +81,16 @@ class BurgerBuilder extends Component{
     purchaseCancelHandler=()=>{
         this.setState({purchasing:false})
     }
-    purchaseContinueHandler=()=>{
+    purchaseContinueHandler = () => {
+        const orders = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Shiva',
+                address:'TMP'
+            }
+        }
+        console.log(orders)
         Swal.fire({
             title: 'Are you sure Continue purchasing',
             text: 'Please pay amount :'+this.state.totalPrice.toFixed(2),
@@ -92,7 +102,11 @@ class BurgerBuilder extends Component{
          }).then((result) => {
              console.log(result.value);
             if(result.value){
-                this.setState({purchasing:false})
+                this.setState({ purchasing: false })
+                AxiosFirebaseFactory.post('/orders.json', orders)
+                    .then(response => console.log(response))
+                    .catch(error => console.log(error));
+
             }else{
                 this.setState({purchasing:false}) 
             }
